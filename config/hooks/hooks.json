@@ -1,0 +1,25 @@
+{
+  "safety-gate": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py scripts/pretooluse_guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "iron-law-reminder": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "py scripts/preinv_reminder.py",
+        "timeout": 10
+      }
+    ]
+  }
+}
