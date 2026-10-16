@@ -19,7 +19,7 @@ the prompts:
   "agentMode": "accept-edits",
   "artifactReviewPolicy": "always-proceed",
   "toolPermission": "always-proceed",
-  "trustedWorkspaces": ["C:\\Users\\Ryan"],
+  "trustedWorkspaces": ["C:\\Users\\YourName"],
   "permissions": {
     "allow": [
       "command(git)", "command(python)", "command(npm)", "command(node)",
