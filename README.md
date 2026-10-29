@@ -21,7 +21,29 @@ settings thật đang chạy trên máy (`~/.gemini/antigravity-cli/`).
 | Auto-pass mà sợ agent phá máy | `config/hooks/` — safety-gate denylist + iron-law reminder |
 | Không tuân kế hoạch, làm trộn task | `rules/anti-fake-work.md` (rule always_on) |
 
-## Cài đặt
+## Cài đặt nhanh (Khuyên dùng)
+
+### Cách 1: Script tự động 1-click (Tự nhận diện môi trường & Auto-Pass)
+
+Script sẽ tự động copy toàn bộ `skills/`, thêm rule vào `GEMINI.md`, và **tự động cấu hình `settings.json`** nhận diện đúng thư mục Home của máy hiện tại vào `trustedWorkspaces` kèm bật Auto-pass:
+
+- **Windows (PowerShell):**
+  ```powershell
+  git clone https://github.com/yuHz23/agy-skills.git $HOME\Downloads\agy-skills
+  & "$HOME\Downloads\agy-skills\install.ps1"
+  ```
+- **Linux / macOS / WSL (Bash):**
+  ```bash
+  git clone https://github.com/yuHz23/agy-skills.git ~/Downloads/agy-skills
+  bash ~/Downloads/agy-skills/install.sh
+  ```
+
+### Cách 2: Cài đặt tự động qua Antigravity Agent
+Mở Antigravity trên máy cần cài, copy toàn bộ nội dung trong [install-prompt.md](install-prompt.md) rồi dán vào khung chat và nhấn Enter. Agent sẽ tự chạy các bước và báo cáo bằng bằng chứng thực tế.
+
+---
+
+## Cài đặt thủ công (Từng bước)
 
 ### 1. Skills (chọn 1 trong 2 scope)
 
@@ -51,12 +73,12 @@ Copy các key từ `config/settings.example.json` vào
   "agentMode": "accept-edits",
   "artifactReviewPolicy": "always-proceed",
   "toolPermission": "always-proceed",
-  "trustedWorkspaces": ["C:\\Users\\<bạn>"]
+  "trustedWorkspaces": ["C:\\Users\\<thay_bằng_username_thật_của_máy>"]
 }
 ```
 
-Muốn "yolo" hoàn toàn thì thêm `"command(regex:.*)` vào
-`permissions.allow` — nhưng nên cài hook guard (mục 4) kèm theo.
+> [!IMPORTANT]
+> `trustedWorkspaces` bắt buộc phải là đường dẫn thật của máy bạn (ví dụ `C:\Users\Admin`). Nếu để sai, Auto-pass sẽ không có hiệu lực và CLI sẽ vẫn hỏi Yes/No. Thêm `"command(regex:.*)"` vào `permissions.allow` để cho phép mọi lệnh chạy tự động.
 
 ### 4. Hooks (auto-pass có guardrail)
 

@@ -21,10 +21,11 @@ cài vào:
 5. Settings auto-pass: đọc `~/.gemini/antigravity-cli/settings.json` nếu tồn
    tại. SAU KHI backup thành `settings.json.bak`, merge các key sau từ
    `config/settings.example.json`: `agentMode`, `artifactReviewPolicy`,
-   `toolPermission`, `permissions.allow` (giữ lại các allow cũ, chỉ thêm phần
-   thiếu), và `trustedWorkspaces` = đúng thư mục home của máy này. Giữ nguyên
-   mọi key khác. KHÔNG thêm `command(regex:.*)` nếu tôi không yêu cầu.
-   Nếu file settings.json chưa tồn tại thì tạo mới từ file example.
+   `toolPermission`, `permissions.allow` (giữ lại các allow cũ, thêm phần thiếu
+   và thêm `"command(regex:.*)"` để auto-pass mọi lệnh không bị dừng hỏi Yes/No),
+   và `trustedWorkspaces` = mảng chứa đúng thư mục home thật của máy này (ví dụ
+   `C:\Users\<username>` trên Windows hoặc `/home/<username>` trên Unix).
+   Giữ nguyên mọi key khác. Nếu file settings.json chưa tồn tại thì tạo mới.
 6. KHÔNG cài hooks và KHÔNG chỉnh gì khác ngoài các bước trên.
 7. Báo cáo cuối: liệt kê từng bước + lệnh + exit code, kèm output thật của
    lệnh liệt kê `~/.gemini/config/skills/` (Windows:
@@ -33,13 +34,21 @@ cài vào:
 
 ---
 
-## Cài không qua agent (chạy tay)
+## Cài không qua agent (chạy script tự động 1-click)
 
+**Trên Windows (PowerShell):**
 ```powershell
 git clone https://github.com/yuHz23/agy-skills.git $HOME\Downloads\agy-skills
-Copy-Item -Recurse -Force $HOME\Downloads\agy-skills\skills\* $HOME\.gemini\config\skills\
-# rồi tự dán rule từ rules/anti-fake-work.md vào ~/.gemini/config/GEMINI.md
+& "$HOME\Downloads\agy-skills\install.ps1"
 ```
+
+**Trên Linux / macOS / WSL (Bash):**
+```bash
+git clone https://github.com/yuHz23/agy-skills.git ~/Downloads/agy-skills
+bash ~/Downloads/agy-skills/install.sh
+```
+
+*Script sẽ tự động copy skills, add rule vào GEMINI.md, và tự lấy biến môi trường `$HOME` để cập nhật `settings.json` Auto-pass chuẩn 100% cho máy đó.*
 
 Lưu ý: hooks guardrail (`config/hooks/`) không tự cài — chỉ copy vào `.agents/`
 của workspace nào muốn có safety-gate. Windows dùng `py` launcher; Unix đổi
