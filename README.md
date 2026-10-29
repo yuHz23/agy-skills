@@ -1,1 +1,84 @@
-YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éí×¯}N‹Z–‹­¦ëeŠw¬ÔŒ…äµÍ­¥±±Ì()†îd¤·†îeĞ³†ê¸¡¼¹Ñ¥É…Ù¥Ñä1$°ÁÀÛ€%¸Í¤Ÿ†îM´€ÔÍ­¥±°É§©¹œ†î„É•Á¼°€ÈĞÍ­¥±°“å¹œ¡Õ¹œÓ†î¬m…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±Ít¡¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±Ì¤°ÉÕ±”£†îE¹œ‹…¼¡¿¸Ñ£¹ §†êŒ°¡½½¬Õ…É‘É…¥°Û€†ê•Ô£±¹ …ÕÑ¼µÁ…ÍÌ¸((ŒŒ¤¡¼¹ŸÃ†îu¤­£Ñ¹œË¹ ¯†îäÑ¡×†êµĞ((ŒŒŒ]¥¹‘½İÌ((Ä¸S†ê¤mi%@·†îm¤¹£†ê•Ñt¡¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì½…É¡¥Ù”½É•™Ì½¡•…‘Ì½µ…¥¸¹é¥À¤Û€§†ê¤»¥¸¸(È¸7†î|Ñ£À·†î•ŒÛ†î­„§†ê¤»¥¸°¹£†ê•ÀƒGéÀ¥¹ÍÑ…±°¹‰…Ñ€¸(Ì¸£†îtÑ£Ñ¹œ‹…¼¡¿¸Ó†ê•Ğ°Í…ÔƒGÌ­£†î}¤ƒG†îe¹œ³†ê…¤¹Ñ¥É…Ù¥Ñä1$¸()-£Ñ¹œ†ê¸ÅÕç†î¸‘µ¥¹¥ÍÑÉ…Ñ½È¸†îd¤£†î$¡¤Û¼£†îLÏ„ÕÍ•È¡§†î¸Ó†ê…¤¸();†êıÔƒGŒ¤¥Ğ°ÌÑ£†îÓ†ê¤Û€£†ê…ä‹†êÅ¹œA½İ•ÉM¡•±°è()Á½İ•ÉÍ¡•±°)¥Ğ±½¹”¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì¹¥Ğ€ˆ‘!=5qq½İ¹±½…‘Íqq…äµÍ­¥±±Ìˆ(˜€ˆ‘!=5qq½İ¹±½…‘Íqq…äµÍ­¥±±Íqq¥¹ÍÑ…±°¹ÁÌÄˆ)€((ŒŒŒ1¥¹Õà°µ…=L¡¿†êİŒ]M0()‰…Í )¥Ğ±½¹”¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì¹¥Ğø½½İ¹±½…‘Ì½…äµÍ­¥±±Ì)‰…Í ø½½İ¹±½…‘Ì½…äµÍ­¥±±Ì½¥¹ÍÑ…±°¹Í )€()3†î¹ ¤ƒG†êİĞ†ê¸AåÑ¡½¸€ÌƒG†îŸ†îeÀ)M=8¸;†êıÔÑ¡§†êıÔAåÑ¡½¸€Ì°¥¹ÍÑ…±±•È“†î­¹œÑËÃ†îmŒ­¡¤¡¤™¥±”Û€£†î$ËÔƒE§†îÔ­§†î¸†ê¸¤¸((ŒŒ†îd¤†êµÀ¹£†êµĞ¹£†î½¹œŸ°()ğQ£¹ Á£†ê¸ğƒCÃ†îu¹œ“†ê­¸Ñ¿¸†î•Œğ)ğ´´µğ´´µğ)ğM­¥±±Ì¡¼¹Ñ¥É…Ù¥Ñä1$ğø¼¹•µ¥¹¤½…¹Ñ¥É…Ù¥Ñäµ±¤½Í­¥±±Ì½€ğ)ğM­¥±±Ì¡¼¹Ñ¥É…Ù¥ÑäÁÀÛ€%ğø¼¹•µ¥¹¤½½¹™¥œ½Í­¥±±Ì½€ğ)ğIÕ±”¡Õ¹œğø¼¹•µ¥¹¤½5%9$¹µ‘€¡¿†êİ¯}¶‰ËkºwµçAğ)ğ…ÕÑ¼µÁ…ÍÍ€ğ¤ƒG†êİĞ…ÕÑ¼µ…ÁÁÉ½Ù”Û€¡§†îÔÁ£†ê…´Ù¤ÅÕç†î¸†î„»Ì¸ğ)ğÑ•ÍĞµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€ğY§†êıĞÑ¡…äƒG†îU¤Ñ¡•¼¡Ô¯†îÌIµI8µIQ=H¸ğ)ğÑ½­•¸µ™ÉÕ…±¥Ñå€ğ§†î¼½¹Ñ•áĞŸ†î5¸°³ÁÔ¡•­Á½¥¹Ğ¡¼Ñ…Í¬“¤¸ğ)ğÙ•É¥™¥…Ñ¥½¸µ‰•™½É”µ½µÁ±•Ñ¥½¹€ğƒCÉ¤‹†êÅ¹œ£†î¥¹œ·†îm¤ÑËÃ†îmŒ­¡¤‹…¼¡¿¸Ó†ê•Ğ¸ğ((ŒŒM­¥±±Ì“å¹œ¡Õ¹œ((ÈĞÍ­¥±°ƒGÃ†îŒƒGÍ¹œŸÍ¤Ó†î¬…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±ÌØÀ¸Ø¸ÄÌè()…Á¤µ…¹µ¥¹Ñ•É™…”µ‘•Í¥¹€°‰É½İÍ•ÈµÑ•ÍÑ¥¹œµİ¥Ñ µ‘•ÙÑ½½±Í€°¤µµ…¹µ…ÕÑ½µ…Ñ¥½¹€°½‘”µÉ•Ù¥•Üµ…¹µÅÕ…±¥Ñå€°½‘”µÍ¥µÁ±¥™¥…Ñ¥½¹€°½¹ÍÑÉ…¥¹Ğµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°½¹Ñ•áĞµ•¹¥¹••É¥¹€°‘•‰Õ¥¹œµ…¹µ•ÉÉ½ÈµÉ•½Ù•Éå€°‘•ÁÉ•…Ñ¥½¸µ…¹µµ¥É…Ñ¥½¹€°‘½Õµ•¹Ñ…Ñ¥½¸µ…¹µ…‘ÉÍ€°‘½Õ‰Ğµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°™É½¹Ñ•¹µÕ¤µ•¹¥¹••É¥¹€°¥Ğµİ½É­™±½Üµ…¹µÙ•ÉÍ¥½¹¥¹€°¥‘•„µÉ•™¥¹•€°¥¹É•µ•¹Ñ…°µ¥µÁ±•µ•¹Ñ…Ñ¥½¹€°¥¹Ñ•ÉÙ¥•Üµµ•€°½‰Í•ÉÙ…‰¥±¥Ñäµ…¹µ¥¹ÍÑÉÕµ•¹Ñ…Ñ¥½¹€°Á•É™½Éµ…¹”µ½ÁÑ¥µ¥é…Ñ¥½¹€°Á±…¹¹¥¹œµ…¹µÑ…Í¬µ‰É•…­‘½İ¹€°Í•ÕÉ¥Ñäµ…¹µ¡…É‘•¹¥¹€°Í¡¥ÁÁ¥¹œµ…¹µ±…Õ¹¡€°Í½ÕÉ”µ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°ÍÁ•Œµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°ÕÍ¥¹œµ…•¹ĞµÍ­¥±±Í€¸()M­¥±°Ñ•ÍĞµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€Ó†î¬ÕÁÍÑÉ•…´ƒGÃ†îŒ‹†î<ÅÕ„Û°É•Á¼ƒGŒÌ‹†ê¸É§©¹œ¸§†ê•äÁ£¥ÀÛ€¡¤¹£†êµ¸¹×†îM¸»†êÅ´ÑÉ½¹œmQ!%I}AIQe}9=Q%L¹µ‘t¡Q!%I}AIQe}9=Q%L¹µ¤¸((ŒŒ¤‹†êÅ¹œÁÉ½µÁĞ();†êıÔ¹Ñ¥É…Ù¥ÑäƒGŒ£†ê…äÛ€ÌÅÕç†î¸£†ê…äÑ•Éµ¥¹…°°·†î|m¥¹ÍÑ…±°µÁÉ½µÁĞ¹µ‘t¡¥¹ÍÑ…±°µÁÉ½µÁĞ¹µ¤°Ÿ†îµ¤ÁÉ½µÁĞ¡¼…•¹ĞÛ€ƒG†î…•¹Ğ£†ê…ä¥¹ÍÑ…±±•ÈÑÉ½¹œÉ•Á¼ƒGŒÓ†ê¤á×†îE¹œ¸
+# agy-skills
+
+Bá»™ cÃ i má»™t láº§n cho Antigravity CLI, App vÃ  IDE. GÃ³i gá»“m 5 skill riÃªng cá»§a repo, 24 skill dÃ¹ng chung tá»« [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), rule chá»‘ng bÃ¡o hoÃ n thÃ nh giáº£, hook guardrail vÃ  cáº¥u hÃ¬nh auto-pass.
+
+## CÃ i cho ngÆ°á»i khÃ´ng rÃ nh ká»¹ thuáº­t
+
+### Windows
+
+1. Táº£i [ZIP má»›i nháº¥t](https://github.com/yuHz23/agy-skills/archive/refs/heads/main.zip) vÃ  giáº£i nÃ©n.
+2. Má»Ÿ thÆ° má»¥c vá»«a giáº£i nÃ©n, nháº¥p Ä‘Ãºp `install.bat`.
+3. Chá» thÃ´ng bÃ¡o hoÃ n táº¥t, sau Ä‘Ã³ khá»Ÿi Ä‘á»™ng láº¡i Antigravity CLI.
+
+KhÃ´ng cáº§n quyá»n Administrator. Bá»™ cÃ i chá»‰ ghi vÃ o há»“ sÆ¡ user hiá»‡n táº¡i.
+
+Náº¿u Ä‘Ã£ cÃ i Git, cÃ³ thá»ƒ táº£i vÃ  cháº¡y báº±ng PowerShell:
+
+```powershell
+git clone https://github.com/yuHz23/agy-skills.git "$HOME\\Downloads\\agy-skills"
+& "$HOME\\Downloads\\agy-skills\\install.ps1"
+```
+
+### Linux, macOS hoáº·c WSL
+
+```bash
+git clone https://github.com/yuHz23/agy-skills.git ~/Downloads/agy-skills
+bash ~/Downloads/agy-skills/install.sh
+```
+
+Lá»‡nh cÃ i Ä‘áº·t cáº§n Python 3 Ä‘á»ƒ gá»™p JSON. Náº¿u thiáº¿u Python 3, installer dá»«ng trÆ°á»›c khi ghi file vÃ  chá»‰ rÃµ Ä‘iá»u kiá»‡n cáº§n cÃ i.
+
+## Bá»™ cÃ i cáº­p nháº­t nhá»¯ng gÃ¬
+
+| ThÃ nh pháº§n | ÄÆ°á»ng dáº«n toÃ n cá»¥c |
+|---|---|
+| Skills cho Antigravity CLI | `~/.gemini/antigravity-cli/skills/` |
+| Skills cho Antigravity App vÃ  IDE | `~/.gemini/config/skills/` |
+| Rule chung | `~/.gemini/GEMINI.md` hoáº·c file global hiá»‡n cÃ³ trong `~/.gemini/config/GEMINI.md` |
+| Hooks dÃ¹ng chung | `~/.gemini/config/hooks.json` |
+| Script cá»§a hooks | `~/.gemini/config/agy-skills/hooks/scripts/` |
+| Settings auto-pass cá»§a CLI | `~/.gemini/antigravity-cli/settings.json` |
+
+Installer cÃ i 29 skill, gá»™p settings mÃ  váº«n giá»¯ cÃ¡c key khÃ¡c, vÃ  táº¡o báº£n sao lÆ°u cÃ³ dáº¥u thá»i gian trÆ°á»›c khi sá»­a JSON hoáº·c thÃªm rule. Náº¿u settings/hooks JSON hiá»‡n cÃ³ bá»‹ lá»—i cÃº phÃ¡p, installer dá»«ng vÃ  giá»¯ nguyÃªn file Ä‘Ã³.
+
+### Cáº¥u hÃ¬nh auto-pass
+
+Installer Ä‘áº·t:
+
+- `agentMode: accept-edits` Ä‘á»ƒ tá»± cháº¥p nháº­n sá»­a file trong workspace.
+- `toolPermission: always-proceed` vÃ  `artifactReviewPolicy: always-proceed` Ä‘á»ƒ bá» prompt máº·c Ä‘á»‹nh.
+- `permissions.ask: []` Ä‘á»ƒ xÃ³a cÃ¡c luáº­t há»i xÃ¡c nháº­n toÃ n cá»¥c; giá»¯ nguyÃªn luáº­t `allow` vÃ  `deny` Ä‘Ã£ cÃ³.
+- `enableTerminalSandbox: true` vÃ  `allowNonWorkspaceAccess: false`.
+- ThÃªm thÆ° má»¥c home hiá»‡n táº¡i vÃ o `trustedWorkspaces`.
+
+Luáº­t `deny` váº«n cháº·n thao tÃ¡c Ä‘Ã£ bá»‹ cáº¥m. Ask/Deny Ä‘áº·t á»Ÿ cáº¥p project hoáº·c shared váº«n cÃ³ thá»ƒ yÃªu cáº§u xÃ¡c nháº­n. Hook safety-gate cháº·n má»™t sá»‘ lá»‡nh phÃ¡ hoáº¡i phá»• biáº¿n; danh sÃ¡ch nÃ y khÃ´ng bao phá»§ má»i lá»‡nh nguy hiá»ƒm.
+
+> **LÆ°u Ã½:** `always-proceed` cho phÃ©p CLI tá»± cháº¡y lá»‡nh, web vÃ  MCP mÃ  khÃ´ng há»i. Sandbox cáº§n Ä‘Æ°á»£c AGY há»— trá»£ trÃªn mÃ¡y; náº¿u sandbox khÃ´ng kháº£ dá»¥ng, cáº¥u hÃ¬nh nÃ y váº«n bá» xÃ¡c nháº­n nhÆ°ng khÃ´ng táº¡o Ä‘Æ°á»£c vÃ¹ng cÃ´ láº­p cho lá»‡nh terminal. Chá»‰ cÃ i trÃªn mÃ¡y vÃ  workspace mÃ  ngÆ°á»i dÃ¹ng tin cáº­y.
+
+### Kiá»ƒm tra sau khi cÃ i
+
+- Khá»Ÿi Ä‘á»™ng láº¡i `agy`; nháº­p `/skills` Ä‘á»ƒ xem skills Ä‘Ã£ náº¡p.
+- Nháº­p `/hooks` Ä‘á»ƒ xem hai hook `agy-skills-safety-gate` vÃ  `agy-skills-iron-law-reminder`.
+- Náº¿u má»™t skill vá»«a Ä‘Æ°á»£c cÃ i chÆ°a hiá»‡n, cháº¡y `/skills reload`.
+
+## Skills riÃªng cá»§a repo
+
+| Skill | DÃ¹ng khi |
+|---|---|
+| `anti-fake-work` | NgÄƒn dá»¯ liá»‡u giáº£ vÃ  bÃ¡o hoÃ n thÃ nh khi chÆ°a cÃ³ báº±ng chá»©ng. |
+| `auto-pass` | CÃ i Ä‘áº·t auto-approve vÃ  hiá»ƒu pháº¡m vi quyá»n cá»§a nÃ³. |
+| `test-driven-development` | Viáº¿t thay Ä‘á»•i theo chu ká»³ RED-GREEN-REFACTOR. |
+| `token-frugality` | Giá»¯ context gá»n, lÆ°u checkpoint cho task dÃ i. |
+| `verification-before-completion` | ÄÃ²i báº±ng chá»©ng má»›i trÆ°á»›c khi bÃ¡o hoÃ n táº¥t. |
+
+## Skills dÃ¹ng chung
+
+24 skill Ä‘Æ°á»£c Ä‘Ã³ng gÃ³i tá»« addyosmani/agent-skills v0.6.13:
+
+`api-and-interface-design`, `browser-testing-with-devtools`, `ci-cd-and-automation`, `code-review-and-quality`, `code-simplification`, `constraint-driven-development`, `context-engineering`, `debugging-and-error-recovery`, `deprecation-and-migration`, `documentation-and-adrs`, `doubt-driven-development`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `idea-refine`, `incremental-implementation`, `interview-me`, `observability-and-instrumentation`, `performance-optimization`, `planning-and-task-breakdown`, `security-and-hardening`, `shipping-and-launch`, `source-driven-development`, `spec-driven-development`, `using-agent-skills`.
+
+Skill `test-driven-development` tá»« upstream Ä‘Æ°á»£c bá» qua vÃ¬ repo Ä‘Ã£ cÃ³ báº£n riÃªng. Giáº¥y phÃ©p vÃ  ghi nháº­n nguá»“n náº±m trong [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## CÃ i báº±ng prompt
+
+Náº¿u Antigravity Ä‘Ã£ cháº¡y vÃ  cÃ³ quyá»n cháº¡y terminal, má»Ÿ [install-prompt.md](install-prompt.md), gá»­i prompt cho agent vÃ  Ä‘á»ƒ agent cháº¡y installer trong repo Ä‘Ã£ táº£i xuá»‘ng.
