@@ -1,82 +1,73 @@
 ---
 name: auto-pass
-description: Setup guide for eliminating yes/no permission prompts in Antigravity (CLI and IDE) — auto-approve commands, edits, and artifacts safely. Use when the user wants to stop permission prompts, asks about agentMode/trustedWorkspaces/permissions.allow, or wants to configure auto-run/yolo mode. Pairs auto-pass with a dangerous-command guard hook.
+description: Explains and configures global Antigravity CLI auto-approval. Use when the user wants fewer permission prompts, asks about agentMode, toolPermission, permissions.ask, trustedWorkspaces, or global hooks.
 ---
 
-# Auto-Pass (no more yes/no prompts)
+# Antigravity Auto-Pass
 
-Antigravity asks for confirmation on every command. This skill sets up
-auto-approval so the agent runs unattended, while keeping a guardrail against
-destructive commands.
+The installer in this repository configures Antigravity CLI auto-approval for
+the current user. It also installs skills for the CLI, App, and IDE.
 
-## 1. `settings.json` — the main switches
+## CLI settings
 
-Location: `~/.gemini/antigravity-cli/settings.json` (CLI). The keys that kill
-the prompts:
+The CLI settings file is ~/.gemini/antigravity-cli/settings.json:
 
-```json
+~~~json
 {
+  "$schema": "https://antigravity.google/schemas/v1/settings.json",
   "agentMode": "accept-edits",
   "artifactReviewPolicy": "always-proceed",
   "toolPermission": "always-proceed",
-  "trustedWorkspaces": ["C:\\Users\\YourName"],
-  "permissions": {
-    "allow": [
-      "command(git)", "command(python)", "command(npm)", "command(node)",
-      "command(docker)", "command(podman)", "command(ssh)", "command(tmux)",
-      "command(curl)", "command(jq)", "command(adb)", "command(ffmpeg)"
-    ]
-  }
+  "enableTerminalSandbox": true,
+  "allowNonWorkspaceAccess": false
 }
-```
+~~~
 
-- `toolPermission: "always-proceed"` — tool calls no longer prompt.
-- `agentMode: "accept-edits"` — file edits auto-accept.
-- `artifactReviewPolicy: "always-proceed"` — artifact review auto-accepts.
-- `trustedWorkspaces` — paths where the above apply; only trust directories
-  you actually work in.
-- `permissions.allow` — per-binary grants. `"command(regex:.*)"` allows
-  everything (true yolo) — convenient but pair it with the guard hook below.
+- agentMode: accept-edits accepts workspace file edits automatically.
+- toolPermission: always-proceed runs tools without a prompt unless an
+  explicit Ask or Deny rule matches.
+- artifactReviewPolicy: always-proceed skips artifact review pauses.
+- enableTerminalSandbox: true enables the terminal sandbox when supported.
+- allowNonWorkspaceAccess: false keeps file access inside the active
+  workspace.
 
-See `config/settings.example.json` in this repo for the full known-good file.
+Permission rules have precedence Deny > Ask > Allow. The installer clears the
+global permissions.ask list so old Ask rules do not defeat auto-pass; it
+preserves existing global Allow and Deny lists. Project or shared Ask/Deny
+rules can still apply.
 
-## 2. Permission grant formats (scoped, for sidecars/subagents)
+Do not add command(regex:.*) to permissions.allow: it grants broad command
+access, and it cannot override an Ask or Deny rule.
 
-For scheduled automations and sidecars (`sidecar.json` →
-`agent_permissions.access_grants`), keep grants narrow — never wildcards:
+## Global skills and hooks
 
-- `command(<binary and subcommand>)` → `command(gh pr list)` (never `command(*)`)
-- `read_file(<absolute path>)`, `write_file(<absolute path>)` (never `read_file(*)`)
-- `mcp(<server>/<tool>)` — only for servers present in the environment
-- `read_url(<domain>)`, `execute_url(<domain>)`
+Antigravity CLI loads global skills from
+~/.gemini/antigravity-cli/skills/. Antigravity App and IDE load them from
+~/.gemini/config/skills/.
 
-Never invent grants for tools that were not verified to exist — a sidecar
-running unattended with a hallucinated grant just fails silently.
+Global CLI, App, and IDE hooks live in ~/.gemini/config/hooks.json. The
+installer places their scripts in
+~/.gemini/config/agy-skills/hooks/scripts/ and writes absolute commands, so
+they do not depend on the current workspace.
 
-## 3. Hooks — auto-pass with a guardrail (recommended)
+The safety-gate hook auto-approves ordinary run_command calls and blocks a
+short list of common destructive patterns. It is not a complete sandbox or a
+comprehensive command security filter. Explicit permission rules still apply.
 
-`hooks.json` lets a `PreToolUse` hook decide `allow` / `deny` / `ask` for
-every tool call programmatically. The shipped config in `config/hooks/` of this
-repo:
+## Install and refresh
 
-- **safety-gate** (`PreToolUse` on `run_command`): auto-allows everything
-  EXCEPT a denylist of destructive patterns (disk/format device commands,
-  recursive deletes on root/home, shutdown, `curl … | sh` pipe-to-shell,
-  fork bombs). Denied commands come back with a reason instead of prompting.
-- **iron-law-reminder** (`PreInvocation`): injects a one-line ephemeral
-  reminder — no completion claims without fresh evidence — before each model
-  call, so the anti-fake rules survive long sessions.
+1. Download or clone this repo.
+2. On Windows, double-click install.bat; on Linux/macOS, run bash install.sh.
+3. Restart Antigravity CLI. Use /skills and /hooks to inspect the installed
+   customizations. Use /skills reload if a skill is missing.
 
-Install: copy `config/hooks/hooks.json` + `scripts/` into your workspace
-`.agents/` directory (hooks run with that folder as working directory, via
-`cmd /c` on Windows). The shipped hooks.json uses the Windows `py` launcher;
-on Unix replace `py` with `python3`.
+The installer backs up edited JSON and rule files with a timestamp. If an
+existing JSON file is malformed, it stops without replacing it.
 
-## 4. What auto-pass does NOT cover
+## Permission and sandbox limits
 
-- Network-facing GitHub actions (`gh`/`git` push/PR operations) use the
-  separate `gh.*`/`git.*` permission format — see the built-in
-  `permissioned-github` skill; ask only after a command actually fails.
-- Auto-pass means the agent's mistakes happen unattended. The
-  `anti-fake-work` and `verification-before-completion` skills are the
-  compensating control — install them together with this one.
+always-proceed is the highest-risk setting: commands, web actions, and MCP
+tools can run without confirmation. The terminal sandbox only contains shell
+commands on supported AGY versions and hosts. If the sandbox is unavailable,
+auto-approval remains enabled without that containment. Use this configuration
+only on a machine and workspace the user trusts.

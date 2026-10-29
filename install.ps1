@@ -1,161 +1,180 @@
 <#
 .SYNOPSIS
-    Script tu dong cai dat agy-skills va thiet lap Auto-Pass cho Antigravity CLI / IDE.
+    Installs agy-skills globally for Antigravity CLI, App, and IDE on Windows.
 .DESCRIPTION
-    Tu dong:
-    1. Nhan dien thu muc Home cua moi truong hien tai ($HOME).
-    2. Cai dat toan bo skills vao ~/.gemini/config/skills/.
-    3. Cai dat rule Anti-fake-work vao ~/.gemini/config/GEMINI.md.
-    4. Tu dong cau hinh ~/.gemini/antigravity-cli/settings.json:
-       - trustedWorkspaces tro chinh xac vao thu muc Home cua user hien tai.
-       - agentMode: "accept-edits"
-       - artifactReviewPolicy: "always-proceed"
-       - toolPermission: "always-proceed"
-       - permissions.allow bao gom danh sach lenh chuan + "command(regex:.*)"
+    Does not require administrator rights. Settings and hooks are merged into
+    the current user's profile; existing files are backed up before updates.
 #>
-
 [CmdletBinding()]
 param()
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+$homeDir = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+if ([string]::IsNullOrWhiteSpace($homeDir)) { $homeDir = $HOME }
+$homeDir = [System.IO.Path]::GetFullPath($homeDir)
 
-Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "   AGY-SKILLS AUTO INSTALLER & AUTO-PASS  " -ForegroundColor Cyan
-Write-Host "==========================================" -ForegroundColor Cyan
-
-$homeDir = [System.IO.Path]::GetFullPath($HOME)
-Write-Host "[+] Thu muc Home hien tai: $homeDir" -ForegroundColor Green
-
-# 1. Cai dat Skills
-$skillsSrc = Join-Path $PSScriptRoot "skills"
-$skillsDest = Join-Path $homeDir ".gemini\config\skills"
-if (Test-Path $skillsSrc) {
-    if (-not (Test-Path $skillsDest)) {
-        New-Item -ItemType Directory -Path $skillsDest -Force | Out-Null
-    }
-    Copy-Item -Path "$skillsSrc\*" -Destination $skillsDest -Recurse -Force
-    Write-Host "[+] Da copy toan bo skills vao: $skillsDest" -ForegroundColor Green
-} else {
-    Write-Host "[!] Khong tim thay thu muc skills trong $skillsSrc" -ForegroundColor Yellow
+$geminiDir = Join-Path $homeDir '.gemini'
+$configDir = Join-Path $geminiDir 'config'
+$settingsPath = Join-Path (Join-Path $geminiDir 'antigravity-cli') 'settings.json'
+$hooksPath = Join-Path $configDir 'hooks.json'
+$rulePath = Join-Path $geminiDir 'GEMINI.md'
+$legacyRulePath = Join-Path $configDir 'GEMINI.md'
+$rootRuleExists = Test-Path -LiteralPath $rulePath
+$legacyRuleText = if (Test-Path -LiteralPath $legacyRulePath) { [System.IO.File]::ReadAllText($legacyRulePath) } else { '' }
+if ($legacyRuleText -match '(?im)^# Anti-fake-work\b' -or (-not $rootRuleExists -and (Test-Path -LiteralPath $legacyRulePath))) {
+    $rulePath = $legacyRulePath
 }
+$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 
-# 2. Cai dat Rule Anti-fake-work vao GEMINI.md
-$rulesSrc = Join-Path $PSScriptRoot "rules\anti-fake-work.md"
-$configDir = Join-Path $homeDir ".gemini\config"
-$geminiMd = Join-Path $configDir "GEMINI.md"
-
-if (Test-Path $rulesSrc) {
-    if (-not (Test-Path $configDir)) {
-        New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+function Read-JsonObject {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return [PSCustomObject]@{} }
+    try {
+        $value = ConvertFrom-Json -InputObject ([System.IO.File]::ReadAllText($Path)) -ErrorAction Stop
+    } catch {
+        throw "Invalid JSON at '$Path'. The original file was left unchanged. Fix it and run this installer again. $($_.Exception.Message)"
     }
-    $ruleLines = Get-Content -Encoding utf8 $rulesSrc
-    $ruleBody = @()
-    $record = $false
-    foreach ($line in $ruleLines) {
-        if ($line -match "^-\s+Never claim") {
-            $record = $true
-        }
-        if ($record) {
-            $ruleBody += $line
-        }
+    if ($null -eq $value -or $value -isnot [PSCustomObject]) {
+        throw "Expected a JSON object at '$Path'. The original file was left unchanged."
     }
-
-    $existing = ""
-    if (Test-Path $geminiMd) {
-        $existing = Get-Content -Raw -Encoding utf8 $geminiMd
-    }
-    if ($existing -notmatch "Anti-fake-work") {
-        $header = "`r`n`r`n# Anti-fake-work (luat luon bat - tu bo skill agy-skills)`r`n`r`n"
-        $ruleText = $ruleBody -join "`r`n"
-        Add-Content -Path $geminiMd -Value ($header + $ruleText) -Encoding utf8
-        Write-Host "[+] Da them Anti-fake-work rule vao: $geminiMd" -ForegroundColor Green
-    } else {
-        Write-Host "[*] Rule Anti-fake-work da co trong $geminiMd (bo qua)" -ForegroundColor DarkGray
-    }
-}
-
-# 3. Cau hinh tu dong settings.json (Auto-Pass)
-$agyCliDir = Join-Path $homeDir ".gemini\antigravity-cli"
-$settingsPath = Join-Path $agyCliDir "settings.json"
-
-if (-not (Test-Path $agyCliDir)) {
-    New-Item -ItemType Directory -Path $agyCliDir -Force | Out-Null
+    return $value
 }
 
 function Set-ObjectProperty {
     param($Target, [string]$Name, $Value)
     if ($Target.PSObject.Properties[$Name]) {
-        $Target.$Name = $Value
+        $Target.PSObject.Properties[$Name].Value = $Value
     } else {
         $Target | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
     }
 }
 
-$defaultAllows = @(
-    "command(git)", "command(python)", "command(npm)", "command(npx)", "command(node)",
-    "command(dotnet)", "command(cargo)", "command(make)", "command(cmake)", "command(docker)",
-    "command(podman)", "command(ls)", "command(cat)", "command(grep)", "command(find)",
-    "command(curl)", "command(wget)", "command(pip)", "command(pipx)", "command(go)",
-    "command(rustc)", "command(flutter)", "command(dart)", "command(adb)", "command(ffmpeg)",
-    "command(7z)", "command(tar)", "command(mkdir)", "command(cp)", "command(mv)",
-    "command(chmod)", "command(echo)", "command(pwd)", "command(which)", "command(env)",
-    "command(whoami)", "command(date)", "command(dir)", "command(type)", "command(cd)",
-    "command(tmux)", "command(ssh)", "command(scp)", "command(rsync)", "command(ping)",
-    "command(netstat)", "command(ss)", "command(jq)", "command(yq)", "command(regex:.*)"
-)
-
-$settings = [PSCustomObject]@{}
-if (Test-Path $settingsPath) {
-    try {
-        $jsonRaw = Get-Content -Raw -Encoding utf8 $settingsPath
-        $parsed = $jsonRaw | ConvertFrom-Json
-        if ($parsed) {
-            $settings = $parsed
-            Copy-Item -Path $settingsPath -Destination "$settingsPath.bak" -Force
-            Write-Host "[*] Da backup settings cu sang: $settingsPath.bak" -ForegroundColor DarkGray
-        }
-    } catch {
-        Write-Host "[!] Khong the parse settings.json cu, se tao moi." -ForegroundColor Yellow
-        $settings = [PSCustomObject]@{}
+function Backup-File {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (Test-Path -LiteralPath $Path) {
+        $backupPath = "$Path.bak.$timestamp"
+        Copy-Item -LiteralPath $Path -Destination $backupPath
+        Write-Host "[*] Backup: $backupPath"
     }
 }
 
-Set-ObjectProperty $settings "agentMode" "accept-edits"
-Set-ObjectProperty $settings "artifactReviewPolicy" "always-proceed"
-Set-ObjectProperty $settings "toolPermission" "always-proceed"
+function Save-JsonObject {
+    param([string]$Path, $Value)
+    $parent = Split-Path -Parent $Path
+    New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    Backup-File -Path $Path
+    $tempPath = "$Path.$([guid]::NewGuid().ToString('N')).tmp"
+    try {
+        $json = ConvertTo-Json -InputObject $Value -Depth 100
+        [System.IO.File]::WriteAllText($tempPath, $json, $utf8NoBom)
+        Move-Item -LiteralPath $tempPath -Destination $Path -Force
+    } finally {
+        Remove-Item -LiteralPath $tempPath -Force -ErrorAction SilentlyContinue
+    }
+}
 
-# trustedWorkspaces
+$skillsSource = Join-Path $PSScriptRoot 'skills'
+$ruleSource = Join-Path $PSScriptRoot 'rules\anti-fake-work.md'
+$hookTemplatePath = Join-Path $PSScriptRoot 'config\hooks\hooks.json'
+$hookScriptsSource = Join-Path $PSScriptRoot 'config\hooks\scripts'
+$settings = Read-JsonObject -Path $settingsPath
+$installedHooks = Read-JsonObject -Path $hooksPath
+$hookTemplate = Read-JsonObject -Path $hookTemplatePath
+if (-not (Test-Path -LiteralPath $skillsSource)) { throw "Skills folder not found: $skillsSource" }
+if (-not (Test-Path -LiteralPath $ruleSource)) { throw "Rule file not found: $ruleSource" }
+if (-not (Test-Path -LiteralPath $hookScriptsSource)) { throw "Hook scripts not found: $hookScriptsSource" }
+
+$skills = @(Get-ChildItem -LiteralPath $skillsSource -Directory)
+if ($skills.Count -eq 0) { throw "No skill folders found in $skillsSource" }
+
+# Merge supported CLI settings. Existing allow and deny rules are retained;
+# explicit Ask rules are cleared because this installer is the auto-pass setup.
+Set-ObjectProperty $settings '$schema' 'https://antigravity.google/schemas/v1/settings.json'
+Set-ObjectProperty $settings 'agentMode' 'accept-edits'
+Set-ObjectProperty $settings 'artifactReviewPolicy' 'always-proceed'
+Set-ObjectProperty $settings 'toolPermission' 'always-proceed'
+Set-ObjectProperty $settings 'enableTerminalSandbox' $true
+Set-ObjectProperty $settings 'allowNonWorkspaceAccess' $false
+
 $trusted = @()
-if ($settings.PSObject.Properties["trustedWorkspaces"] -and $settings.trustedWorkspaces) {
+if ($settings.PSObject.Properties['trustedWorkspaces'] -and $null -ne $settings.trustedWorkspaces) {
     $trusted = @($settings.trustedWorkspaces)
 }
-if ($trusted -notcontains $homeDir) {
-    $trusted += $homeDir
-}
-Set-ObjectProperty $settings "trustedWorkspaces" $trusted
+$homeKey = $homeDir.TrimEnd([char[]]@('\', '/'))
+$alreadyTrusted = @($trusted | Where-Object {
+    ([string]$_).TrimEnd([char[]]@('\', '/')) -ieq $homeKey
+}).Count -gt 0
+if (-not $alreadyTrusted) { $trusted += $homeDir }
+Set-ObjectProperty $settings 'trustedWorkspaces' $trusted
 
-# permissions.allow
-if (-not $settings.PSObject.Properties["permissions"] -or -not $settings.permissions) {
-    Set-ObjectProperty $settings "permissions" ([PSCustomObject]@{})
-}
-$allow = @()
-if ($settings.permissions.PSObject.Properties["allow"] -and $settings.permissions.allow) {
-    $allow = @($settings.permissions.allow)
-}
-foreach ($cmd in $defaultAllows) {
-    if ($allow -notcontains $cmd) {
-        $allow += $cmd
+$permissionsProperty = $settings.PSObject.Properties['permissions']
+if (-not $permissionsProperty) {
+    $permissions = [PSCustomObject]@{}
+    Set-ObjectProperty $settings 'permissions' $permissions
+} else {
+    $permissions = $permissionsProperty.Value
+    if ($null -eq $permissions -or $permissions -isnot [PSCustomObject]) {
+        throw "Expected 'permissions' to be a JSON object in '$settingsPath'. The original file was left unchanged."
     }
 }
-Set-ObjectProperty $settings.permissions "allow" $allow
+Set-ObjectProperty $permissions 'ask' @()
 
-$jsonOutput = $settings | ConvertTo-Json -Depth 10
-[System.IO.File]::WriteAllText($settingsPath, $jsonOutput, [System.Text.Encoding]::UTF8)
+# Point global hooks to bundled scripts under the user's profile.
+$globalHookScripts = Join-Path $configDir 'agy-skills\hooks\scripts'
+$toolHookPath = Join-Path $globalHookScripts 'pretooluse_guard.ps1'
+$reminderHookPath = Join-Path $globalHookScripts 'preinv_reminder.ps1'
+$quotedToolHook = '"' + $toolHookPath.Replace('"', '""') + '"'
+$quotedReminderHook = '"' + $reminderHookPath.Replace('"', '""') + '"'
+$safetyHook = $hookTemplate.PSObject.Properties['agy-skills-safety-gate'].Value
+$reminderHook = $hookTemplate.PSObject.Properties['agy-skills-iron-law-reminder'].Value
+$safetyHook.PreToolUse[0].hooks[0].command = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $quotedToolHook"
+$reminderHook.PreInvocation[0].command = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $quotedReminderHook"
+Set-ObjectProperty $installedHooks 'agy-skills-safety-gate' $safetyHook
+Set-ObjectProperty $installedHooks 'agy-skills-iron-law-reminder' $reminderHook
 
-Write-Host "[+] Cau hinh settings.json Auto-pass thanh cong tai: $settingsPath" -ForegroundColor Green
-Write-Host "    - trustedWorkspaces: $homeDir" -ForegroundColor Cyan
-Write-Host "    - toolPermission: always-proceed" -ForegroundColor Cyan
-Write-Host "    - agentMode: accept-edits" -ForegroundColor Cyan
-Write-Host "    - permissions.allow: da them command(regex:.*)" -ForegroundColor Cyan
+# Apply all files after settings and hooks have passed JSON validation.
+foreach ($destination in @(
+    (Join-Path $geminiDir 'antigravity-cli\skills'),
+    (Join-Path $configDir 'skills')
+)) {
+    New-Item -ItemType Directory -Path $destination -Force | Out-Null
+    foreach ($skill in $skills) {
+        $skillDestination = Join-Path $destination $skill.Name
+        New-Item -ItemType Directory -Path $skillDestination -Force | Out-Null
+        Copy-Item -Path (Join-Path $skill.FullName '*') -Destination $skillDestination -Recurse -Force
+    }
+}
+Write-Host "[+] Installed $($skills.Count) skills for Antigravity CLI and IDE."
+
+New-Item -ItemType Directory -Path $globalHookScripts -Force | Out-Null
+Copy-Item -Path (Join-Path $hookScriptsSource '*') -Destination $globalHookScripts -Recurse -Force
+Save-JsonObject -Path $hooksPath -Value $installedHooks
+Write-Host "[+] Installed global hooks: $hooksPath"
+
+$ruleText = [System.IO.File]::ReadAllText($ruleSource)
+$ruleLines = $ruleText -split '\r?\n'
+$start = -1
+for ($i = 0; $i -lt $ruleLines.Length; $i++) {
+    if ($ruleLines[$i] -match '^-\s+Never claim') { $start = $i; break }
+}
+if ($start -lt 0) { throw "Could not find the rule body in '$ruleSource'." }
+$ruleBody = ($ruleLines[$start..($ruleLines.Length - 1)] -join [Environment]::NewLine)
+$existingRule = if (Test-Path -LiteralPath $rulePath) { [System.IO.File]::ReadAllText($rulePath) } else { '' }
+if ($existingRule -notmatch '(?im)^# Anti-fake-work\b') {
+    Backup-File -Path $rulePath
+    $separator = if ([string]::IsNullOrWhiteSpace($existingRule)) { '' } else { [Environment]::NewLine + [Environment]::NewLine }
+    $ruleContent = $existingRule + $separator + "# Anti-fake-work (agy-skills)" + [Environment]::NewLine + [Environment]::NewLine + $ruleBody + [Environment]::NewLine
+    [System.IO.File]::WriteAllText($rulePath, $ruleContent, $utf8NoBom)
+    Write-Host "[+] Added the global Anti-fake-work rule: $rulePath"
+} else {
+    Write-Host "[*] Global Anti-fake-work rule already exists."
+}
+
+Save-JsonObject -Path $settingsPath -Value $settings
+Write-Host "[+] Auto-pass settings saved: $settingsPath"
+Write-Host "    agentMode=accept-edits; toolPermission=always-proceed"
+Write-Host "    terminal sandbox enabled; non-workspace file access disabled"
+Write-Host "    explicit Ask rules cleared; existing Allow and Deny rules retained"
 Write-Host ""
-Write-Host "===> HOAN TAT CAI DAT! Khoi dong lai Antigravity CLI de ap dung." -ForegroundColor Green
+Write-Host "Restart Antigravity CLI to load the global settings, skills, and hooks."

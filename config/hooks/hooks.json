@@ -1,23 +1,23 @@
 {
-  "safety-gate": {
+  "agy-skills-safety-gate": {
     "PreToolUse": [
       {
         "matcher": "run_command",
         "hooks": [
           {
             "type": "command",
-            "command": "py scripts/pretooluse_guard.py",
+            "command": "py -3 scripts/pretooluse_guard.py",
             "timeout": 10
           }
         ]
       }
     ]
   },
-  "iron-law-reminder": {
+  "agy-skills-iron-law-reminder": {
     "PreInvocation": [
       {
         "type": "command",
-        "command": "py scripts/preinv_reminder.py",
+        "command": "py -3 scripts/preinv_reminder.py",
         "timeout": 10
       }
     ]

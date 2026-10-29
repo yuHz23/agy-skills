@@ -1,126 +1,157 @@
 #!/usr/bin/env bash
-# ==============================================================================
-#  AGY-SKILLS AUTO INSTALLER & AUTO-PASS (Linux / macOS / WSL)
-# ==============================================================================
+set -euo pipefail
 
-set -e
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export AGY_SKILLS_SOURCE="$SCRIPT_DIR"
+export HOME_DIR="${HOME:?Could not determine your home directory}"
 
-echo "=========================================="
-echo "   AGY-SKILLS AUTO INSTALLER & AUTO-PASS  "
-echo "=========================================="
-
-HOME_DIR="$HOME"
-echo "[+] Môi trường Home hiện tại: $HOME_DIR"
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# 1. Cài đặt Skills
-SKILLS_SRC="$SCRIPT_DIR/skills"
-SKILLS_DEST="$HOME_DIR/.gemini/config/skills"
-if [ -d "$SKILLS_SRC" ]; then
-    mkdir -p "$SKILLS_DEST"
-    cp -rf "$SKILLS_SRC/"* "$SKILLS_DEST/"
-    echo "[+] Đã copy toàn bộ skills vào: $SKILLS_DEST"
-else
-    echo "[!] Không tìm thấy thư mục skills trong $SKILLS_SRC"
-fi
-
-# 2. Cài đặt Rule Anti-fake-work vào GEMINI.md
-RULES_SRC="$SCRIPT_DIR/rules/anti-fake-work.md"
-CONFIG_DIR="$HOME_DIR/.gemini/config"
-GEMINI_MD="$CONFIG_DIR/GEMINI.md"
-
-if [ -f "$RULES_SRC" ]; then
-    mkdir -p "$CONFIG_DIR"
-    if [ -f "$GEMINI_MD" ]; then
-        if ! grep -q "Anti-fake-work" "$GEMINI_MD"; then
-            echo -e "\n\n# Anti-fake-work (luật luôn bật — từ bộ skill agy-skills)\n" >> "$GEMINI_MD"
-            cat "$RULES_SRC" >> "$GEMINI_MD"
-            echo "[+] Đã thêm Anti-fake-work rule vào: $GEMINI_MD"
-        else
-            echo "[*] Rule Anti-fake-work đã có trong $GEMINI_MD (bỏ qua)"
-        fi
-    else
-        echo -e "# Anti-fake-work (luật luôn bật — từ bộ skill agy-skills)\n" > "$GEMINI_MD"
-        cat "$RULES_SRC" >> "$GEMINI_MD"
-        echo "[+] Đã tạo GEMINI.md với rule Anti-fake-work: $GEMINI_MD"
-    fi
-fi
-
-# 3. Cấu hình tự động settings.json (Auto-Pass)
-AGY_CLI_DIR="$HOME_DIR/.gemini/antigravity-cli"
-SETTINGS_PATH="$AGY_CLI_DIR/settings.json"
-mkdir -p "$AGY_CLI_DIR"
-
-# Chạy script Python (hoặc Python3) để merge JSON chuẩn xác
 PYTHON_CMD=""
-if command -v python3 &>/dev/null; then
+if command -v python3 >/dev/null 2>&1; then
     PYTHON_CMD="python3"
-elif command -v python &>/dev/null; then
+elif command -v python >/dev/null 2>&1; then
     PYTHON_CMD="python"
-fi
-
-if [ -n "$PYTHON_CMD" ]; then
-    $PYTHON_CMD - <<EOF
-import json, os
-
-home_dir = os.path.expanduser("~")
-settings_path = os.path.join(home_dir, ".gemini", "antigravity-cli", "settings.json")
-
-default_allows = [
-    "command(git)", "command(python)", "command(npm)", "command(npx)", "command(node)",
-    "command(dotnet)", "command(cargo)", "command(make)", "command(cmake)", "command(docker)",
-    "command(podman)", "command(ls)", "command(cat)", "command(grep)", "command(find)",
-    "command(curl)", "command(wget)", "command(pip)", "command(pipx)", "command(go)",
-    "command(rustc)", "command(flutter)", "command(dart)", "command(adb)", "command(ffmpeg)",
-    "command(7z)", "command(tar)", "command(mkdir)", "command(cp)", "command(mv)",
-    "command(chmod)", "command(echo)", "command(pwd)", "command(which)", "command(env)",
-    "command(whoami)", "command(date)", "command(cd)", "command(tmux)", "command(ssh)",
-    "command(scp)", "command(rsync)", "command(ping)", "command(netstat)", "command(ss)",
-    "command(jq)", "command(yq)", "command(regex:.*)"
-]
-
-data = {}
-if os.path.exists(settings_path):
-    try:
-        with open(settings_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        with open(settings_path + '.bak', 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2)
-        print("[*] Đã backup settings cũ sang: " + settings_path + ".bak")
-    except Exception:
-        data = {}
-
-data["agentMode"] = "accept-edits"
-data["artifactReviewPolicy"] = "always-proceed"
-data["toolPermission"] = "always-proceed"
-
-trusted = data.get("trustedWorkspaces", [])
-if not isinstance(trusted, list):
-    trusted = []
-if home_dir not in trusted:
-    trusted.append(home_dir)
-data["trustedWorkspaces"] = trusted
-
-if "permissions" not in data or not isinstance(data["permissions"], dict):
-    data["permissions"] = {}
-
-allows = data["permissions"].get("allow", [])
-if not isinstance(allows, list):
-    allows = []
-for cmd in default_allows:
-    if cmd not in allows:
-        allows.append(cmd)
-data["permissions"]["allow"] = allows
-
-with open(settings_path, 'w', encoding='utf-8') as f:
-    json.dump(data, f, indent=2)
-
-print("[+] Cấu hình settings.json Auto-pass thành công tại: " + settings_path)
-EOF
 else
-    echo "[!] Không tìm thấy Python để merge JSON, vui lòng kiểm tra thủ công $SETTINGS_PATH"
+    echo "[!] Python 3 is required to merge the Antigravity settings safely."
+    echo "    Install Python 3, then run this installer again. No files were changed."
+    exit 1
 fi
+export PYTHON_CMD
 
-echo ""
-echo "===> HOÀN TẤT CÀI ĐẶT! Khởi động lại Antigravity CLI để áp dụng."
+"$PYTHON_CMD" - <<'PY'
+import json
+import os
+import shlex
+import shutil
+import tempfile
+from datetime import datetime
+from pathlib import Path
+
+source = Path(os.environ["AGY_SKILLS_SOURCE"])
+home = Path(os.environ["HOME_DIR"]).expanduser().resolve()
+gemini = home / ".gemini"
+config = gemini / "config"
+settings_path = gemini / "antigravity-cli" / "settings.json"
+hooks_path = config / "hooks.json"
+rule_path = gemini / "GEMINI.md"
+legacy_rule_path = config / "GEMINI.md"
+legacy_rule_text = legacy_rule_path.read_text(encoding="utf-8") if legacy_rule_path.exists() else ""
+if "# Anti-fake-work" in legacy_rule_text or (not rule_path.exists() and legacy_rule_path.exists()):
+    rule_path = legacy_rule_path
+template_path = source / "config" / "hooks" / "hooks.json"
+rule_source = source / "rules" / "anti-fake-work.md"
+skills_source = source / "skills"
+scripts_source = source / "config" / "hooks" / "scripts"
+stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+
+def read_object(path):
+    if not path.exists():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise SystemExit(f"Invalid JSON at '{path}'. The original file was left unchanged: {exc}")
+    if not isinstance(value, dict):
+        raise SystemExit(f"Expected a JSON object at '{path}'. The original file was left unchanged.")
+    return value
+
+def backup(path):
+    if path.exists():
+        backup_path = Path(f"{path}.bak.{stamp}")
+        shutil.copy2(path, backup_path)
+        print(f"[*] Backup: {backup_path}")
+
+def save_object(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    backup(path)
+    temp_name = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", newline="\n", dir=path.parent,
+            prefix=f".{path.name}.", suffix=".tmp", delete=False
+        ) as temp:
+            temp_name = temp.name
+            json.dump(value, temp, ensure_ascii=False, indent=2)
+            temp.write("\n")
+            temp.flush()
+            os.fsync(temp.fileno())
+        os.replace(temp_name, path)
+    finally:
+        if temp_name and os.path.exists(temp_name):
+            os.unlink(temp_name)
+
+settings = read_object(settings_path)
+installed_hooks = read_object(hooks_path)
+hook_template = read_object(template_path)
+if not skills_source.is_dir() or not any(p.is_dir() for p in skills_source.iterdir()):
+    raise SystemExit(f"No skill folders found at '{skills_source}'. No files were changed.")
+if not rule_source.is_file() or not scripts_source.is_dir():
+    raise SystemExit("The repository is missing its rule or hook scripts. No files were changed.")
+permissions = settings.get("permissions", {})
+if not isinstance(permissions, dict):
+    raise SystemExit(f"Expected 'permissions' to be an object in '{settings_path}'. No files were changed.")
+
+settings["$schema"] = settings.get("$schema", "https://antigravity.google/schemas/v1/settings.json")
+settings["agentMode"] = "accept-edits"
+settings["artifactReviewPolicy"] = "always-proceed"
+settings["toolPermission"] = "always-proceed"
+settings["enableTerminalSandbox"] = True
+settings["allowNonWorkspaceAccess"] = False
+trusted = settings.get("trustedWorkspaces", [])
+if not isinstance(trusted, list):
+    raise SystemExit(f"Expected 'trustedWorkspaces' to be an array in '{settings_path}'. No files were changed.")
+if not any(str(item).rstrip("/\\").casefold() == str(home).rstrip("/\\").casefold() for item in trusted):
+    trusted.append(str(home))
+settings["trustedWorkspaces"] = trusted
+permissions["ask"] = []
+settings["permissions"] = permissions
+
+global_hook_scripts = config / "agy-skills" / "hooks" / "scripts"
+safety_script = global_hook_scripts / "pretooluse_guard.py"
+reminder_script = global_hook_scripts / "preinv_reminder.py"
+tool_hook = hook_template["agy-skills-safety-gate"]
+reminder_hook = hook_template["agy-skills-iron-law-reminder"]
+python_executable = shlex.quote(os.path.realpath(os.environ["PYTHON_CMD"]))
+tool_hook["PreToolUse"][0]["hooks"][0]["command"] = f"{python_executable} {shlex.quote(str(safety_script))}"
+reminder_hook["PreInvocation"][0]["command"] = f"{python_executable} {shlex.quote(str(reminder_script))}"
+installed_hooks["agy-skills-safety-gate"] = tool_hook
+installed_hooks["agy-skills-iron-law-reminder"] = reminder_hook
+
+skills = [p for p in skills_source.iterdir() if p.is_dir()]
+for destination in (gemini / "antigravity-cli" / "skills", config / "skills"):
+    destination.mkdir(parents=True, exist_ok=True)
+    for skill in skills:
+        shutil.copytree(skill, destination / skill.name, dirs_exist_ok=True)
+print(f"[+] Installed {len(skills)} skills for Antigravity CLI and IDE.")
+
+global_hook_scripts.mkdir(parents=True, exist_ok=True)
+for script in scripts_source.iterdir():
+    if script.is_file():
+        shutil.copy2(script, global_hook_scripts / script.name)
+save_object(hooks_path, installed_hooks)
+print(f"[+] Installed global hooks: {hooks_path}")
+
+rule_lines = rule_source.read_text(encoding="utf-8").splitlines()
+start = next((i for i, line in enumerate(rule_lines) if line.startswith("- Never claim")), None)
+if start is None:
+    raise SystemExit(f"Could not find the rule body in '{rule_source}'.")
+rule_body = "\n".join(rule_lines[start:])
+existing_rule = rule_path.read_text(encoding="utf-8") if rule_path.exists() else ""
+if "# Anti-fake-work" not in existing_rule:
+    backup(rule_path)
+    separator = "\n\n" if existing_rule.strip() else ""
+    rule_path.parent.mkdir(parents=True, exist_ok=True)
+    rule_path.write_text(
+        existing_rule + separator + "# Anti-fake-work (agy-skills)\n\n" + rule_body + "\n",
+        encoding="utf-8",
+    )
+    print(f"[+] Added the global Anti-fake-work rule: {rule_path}")
+else:
+    print("[*] Global Anti-fake-work rule already exists.")
+
+save_object(settings_path, settings)
+print(f"[+] Auto-pass settings saved: {settings_path}")
+print("    agentMode=accept-edits; toolPermission=always-proceed")
+print("    terminal sandbox enabled; non-workspace file access disabled")
+print("    explicit Ask rules cleared; existing Allow and Deny rules retained")
+print("\nRestart Antigravity CLI to load the global settings, skills, and hooks.")
+PY

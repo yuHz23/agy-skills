@@ -1,155 +1,1 @@
-# agy-skills
-
-Bá»™ skill cho **Google Antigravity** (IDE + CLI) â€” chá»¯a cÃ¡c "bá»‡nh" Ä‘Ã£ Ä‘Æ°á»£c ghi
-nháº­n rá»™ng rÃ£i cá»§a Gemini agent: **giáº£ váº½ cÃ´ng viá»‡c** (simulated work), tá»±
-certify káº¿t quáº£, hallucinate completion summary, tá»‘n token, cháº¿t vÃ¬ háº¿t
-context, vÃ  há»i yes/no liÃªn tá»¥c.
-
-Bá»™ skill dá»±a trÃªn pattern tá»« cÃ¡c repo nhiá»u sao nháº¥t trong cá»™ng Ä‘á»“ng agent
-skills (xem [Nguá»“n tham kháº£o](#nguá»“n-tham-kháº£o)) vÃ  bá»™ skill builtin +
-settings tháº­t Ä‘ang cháº¡y trÃªn mÃ¡y (`~/.gemini/antigravity-cli/`).
-
-## Map: bá»‡nh â†’ thuá»‘c
-
-| Bá»‡nh cá»§a Antigravity | Thuá»‘c |
-|---|---|
-| Giáº£ váº½: hardcode data, mock JSON, sleep loop rá»“i bÃ¡o "done" | `skills/anti-fake-work` |
-| Tá»± certify / hallucinate completion summary | `skills/verification-before-completion` |
-| BÃ¡o "fixed" mÃ  khÃ´ng cháº¡y láº¡i repro | `skills/test-driven-development` (chu ká»³ RED-GREEN cÃ³ verify) |
-| "Prompt is too long" â€” agent cháº¿t vÃ¬ khÃ´ng cÃ³ compaction; tá»‘n ~30% token hÆ¡n | `skills/token-frugality` (+ `PROGRESS.md` checkpoint) |
-| Há»i yes/no má»i lá»‡nh | `skills/auto-pass` + `config/settings.example.json` |
-| Auto-pass mÃ  sá»£ agent phÃ¡ mÃ¡y | `config/hooks/` â€” safety-gate denylist + iron-law reminder |
-| KhÃ´ng tuÃ¢n káº¿ hoáº¡ch, lÃ m trá»™n task | `rules/anti-fake-work.md` (rule always_on) |
-
-## CÃ i Ä‘áº·t nhanh (KhuyÃªn dÃ¹ng)
-
-### CÃ¡ch 1: Script tá»± Ä‘á»™ng 1-click (Tá»± nháº­n diá»‡n mÃ´i trÆ°á»ng & Auto-Pass)
-
-Script sáº½ tá»± Ä‘á»™ng copy toÃ n bá»™ `skills/`, thÃªm rule vÃ o `GEMINI.md`, vÃ  **tá»± Ä‘á»™ng cáº¥u hÃ¬nh `settings.json`** nháº­n diá»‡n Ä‘Ãºng thÆ° má»¥c Home cá»§a mÃ¡y hiá»‡n táº¡i vÃ o `trustedWorkspaces` kÃ¨m báº­t Auto-pass:
-
-- **Windows (PowerShell):**
-  ```powershell
-  git clone https://github.com/yuHz23/agy-skills.git $HOME\Downloads\agy-skills
-  & "$HOME\Downloads\agy-skills\install.ps1"
-  ```
-- **Linux / macOS / WSL (Bash):**
-  ```bash
-  git clone https://github.com/yuHz23/agy-skills.git ~/Downloads/agy-skills
-  bash ~/Downloads/agy-skills/install.sh
-  ```
-
-### CÃ¡ch 2: CÃ i Ä‘áº·t tá»± Ä‘á»™ng qua Antigravity Agent
-Má»Ÿ Antigravity trÃªn mÃ¡y cáº§n cÃ i, copy toÃ n bá»™ ná»™i dung trong [install-prompt.md](install-prompt.md) rá»“i dÃ¡n vÃ o khung chat vÃ  nháº¥n Enter. Agent sáº½ tá»± cháº¡y cÃ¡c bÆ°á»›c vÃ  bÃ¡o cÃ¡o báº±ng báº±ng chá»©ng thá»±c táº¿.
-
----
-
-## CÃ i Ä‘áº·t thá»§ cÃ´ng (Tá»«ng bÆ°á»›c)
-
-### 1. Skills (chá»n 1 trong 2 scope)
-
-- **ToÃ n mÃ¡y**: copy `skills/*` vÃ o `~/.gemini/config/skills/`
-  ```powershell
-  Copy-Item -Recurse .\skills\* $HOME\.gemini\config\skills\
-  ```
-- **Theo project (commit vÃ o repo Ä‘á»ƒ cáº£ team dÃ¹ng)**: copy vÃ o `<repo>/.agents/skills/`
-
-Skill dÃ¹ng progressive disclosure â€” chá»‰ frontmatter (~100 token) Ä‘Æ°á»£c náº¡p
-vÃ o context; body chá»‰ load khi trigger. Skill tá»± thÃ nh slash command:
-`/anti-fake-work`, `/verification-before-completion`, ...
-
-### 2. Rule always_on
-
-ThÃªm ná»™i dung `rules/anti-fake-work.md` vÃ o `~/.gemini/config/GEMINI.md`
-(global) hoáº·c `AGENTS.md` / `.agents/rules/` (project). Rule luÃ´n náº±m trong
-context nÃªn pháº£i ngáº¯n â€” file Ä‘Ã£ viáº¿t gá»n Ä‘á»ƒ dÃ¡n tháº³ng.
-
-### 3. Auto-pass (settings)
-
-Copy cÃ¡c key tá»« `config/settings.example.json` vÃ o
-`~/.gemini/antigravity-cli/settings.json`:
-
-```json
-{
-  "agentMode": "accept-edits",
-  "artifactReviewPolicy": "always-proceed",
-  "toolPermission": "always-proceed",
-  "trustedWorkspaces": ["C:\\Users\\<thay_báº±ng_username_tháº­t_cá»§a_mÃ¡y>"]
-}
-```
-
-> [!IMPORTANT]
-> `trustedWorkspaces` báº¯t buá»™c pháº£i lÃ  Ä‘Æ°á»ng dáº«n tháº­t cá»§a mÃ¡y báº¡n (vÃ­ dá»¥ `C:\Users\Admin`). Náº¿u Ä‘á»ƒ sai, Auto-pass sáº½ khÃ´ng cÃ³ hiá»‡u lá»±c vÃ  CLI sáº½ váº«n há»i Yes/No. ThÃªm `"command(regex:.*)"` vÃ o `permissions.allow` Ä‘á»ƒ cho phÃ©p má»i lá»‡nh cháº¡y tá»± Ä‘á»™ng.
-
-### 4. Hooks (auto-pass cÃ³ guardrail)
-
-Copy `config/hooks/hooks.json` + `config/hooks/scripts/` vÃ o `.agents/` cá»§a
-workspace (hooks cháº¡y vá»›i thÆ° má»¥c chá»©a `hooks.json` lÃ m working dir, qua
-`cmd /c` trÃªn Windows; file dÃ¹ng sáºµn `py` launcher â€” trÃªn Unix Ä‘á»•i `py`
-thÃ nh `python3`):
-
-- **safety-gate** (`PreToolUse`): tá»± cho phÃ©p Má»ŒI lá»‡nh trá»« denylist phÃ¡ hoáº¡i
-  (mkfs, `dd of=/dev/...`, `rm -rf /`, shutdown, `curl | sh`, fork bomb,
-  force-push main...). Lá»‡nh bá»‹ cháº·n tráº£ vá» kÃ¨m reason, khÃ´ng há»i yes/no.
-- **iron-law-reminder** (`PreInvocation`): chÃ¨n 1 dÃ²ng nháº¯c "khÃ´ng Ä‘Æ°á»£c bÃ¡o
-  done khi chÆ°a cÃ³ evidence" trÆ°á»›c má»—i láº§n gá»i model â€” bÃ¹ cho viá»‡c Antigravity
-  khÃ´ng cÃ³ compaction, rule khÃ´ng bá»‹ trÃ´i trong session dÃ i.
-
-## Cáº¥u trÃºc repo
-
-```
-agy-skills/
-â”œâ”€â”€ README.md
-â”œâ”€â”€ rules/
-â”‚   â””â”€â”€ anti-fake-work.md          # rule always_on, dÃ¡n vÃ o GEMINI.md/AGENTS.md
-â”œâ”€â”€ skills/
-â”‚   â”œâ”€â”€ anti-fake-work/SKILL.md            # cáº¥m giáº£ váº½: hardcode, mock, self-certify
-â”‚   â”œâ”€â”€ verification-before-completion/SKILL.md  # cá»•ng evidence trÆ°á»›c khi claim "done"
-â”‚   â”œâ”€â”€ test-driven-development/SKILL.md    # RED-GREEN-REFACTOR, test pháº£i fail trÆ°á»›c
-â”‚   â”œâ”€â”€ token-frugality/SKILL.md            # Ä‘á»c file chá»n lá»c, PROGRESS.md, tráº£ lá»i gá»n
-â”‚   â””â”€â”€ auto-pass/SKILL.md                  # dá»«ng há»i yes/no: settings + grants + hooks
-â””â”€â”€ config/
-    â”œâ”€â”€ settings.example.json       # file settings auto-pass known-good
-    â””â”€â”€ hooks/
-        â”œâ”€â”€ hooks.json              # safety-gate + iron-law-reminder
-        â””â”€â”€ scripts/
-            â”œâ”€â”€ pretooluse_guard.py  # allow má»i thá»© trá»« denylist phÃ¡ hoáº¡i
-            â””â”€â”€ preinv_reminder.py   # nháº¯c Iron Law má»—i invocation
-```
-
-## Nguá»“n tham kháº£o
-
-Pattern (khÃ´ng copy nguyÃªn vÄƒn â€” viáº¿t láº¡i cho Antigravity/Gemini):
-
-- **[obra/superpowers](https://github.com/obra/superpowers/)** â€” skill
-  `verification-before-completion` ("no completion claims without fresh
-  verification evidence") vÃ  `test-driven-development` (RED-GREEN vá»›i báº£ng
-  anti-rationalization). Repo skill framework cho agent Ä‘Æ°á»£c nhiá»u sao nháº¥t.
-- **[anthropics/skills](https://github.com/anthropics/skills/)** â€” official
-  repo Ä‘á»‹nh nghÄ©a format Agent Skills (SKILL.md + progressive disclosure),
-  sau nÃ y thÃ nh open standard (agentskills.io) mÃ  Antigravity dÃ¹ng.
-- **[ComposioHQ/awesome-claude-skills](https://github.com/composiohq/awesome-claude-skills)**
-  â€” curated list 1000+ skills cháº¡y trÃªn Claude Code, Cursor, Codex, Gemini
-  CLI, Antigravity.
-- **[VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-claude-skills/)**
-  â€” 1000+ skills cá»§a cÃ¡c team tháº­t (Google, Stripe, Cloudflare, Sentry...),
-  kÃ¨m quality standard cho SKILL.md.
-- **[sickn33/agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills)**
-  â€” 2690+ playbook cÃ i Ä‘Æ°á»£c qua CLI.
-- **[travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills/)**
-  â€” list skills chÃ­nh thá»©c + cá»™ng Ä‘á»“ng, security best practices.
-- **Builtin Antigravity** trÃªn mÃ¡y nÃ y (`~/.gemini/antigravity-cli/builtin/skills/`):
-  `agy-customizations` (cáº¥u trÃºc customization, hooks, plugins),
-  `permissioned-github` (format grant `gh.*`/`git.*`), `automation`
-  (sidecar + access_grants), `run-workflow`, `plugin` â€” cÃ¡c skill Ä‘Ã³ cá»§a
-  Google, khÃ´ng copy vÃ o repo nÃ y, chá»‰ tham kháº£o format.
-
-## Ghi chÃº
-
-- Workflow cÅ© (`.agents/workflows/*.md`) bá»‹ Antigravity bá» há»— trá»£ tá»«
-  19/10/2026 â€” dÃ¹ng skills (thÆ° má»¥c) thay tháº¿, cÃ³ lá»‡nh `/migrate-workflows`
-  builtin Ä‘á»ƒ chuyá»ƒn.
-- Auto-pass khÃ´ng thay Ä‘Æ°á»£c verification: cho agent cháº¡y tá»± do MÃ€ KHÃ”NG há»i
-  thÃ¬ báº¯t buá»™c pháº£i cÃ i `anti-fake-work` + `verification-before-completion`
-  cÃ¹ng lÃºc â€” chÃºng lÃ  compensating control cá»§a nhau.
-- Skill format tÆ°Æ¡ng thÃ­ch chÃ©o vá»›i Claude Code (`.claude/skills/`) vÃ¬ cÃ¹ng
-  open standard â€” cÃ³ thá»ƒ dÃ¹ng láº¡i 2 chiá»u.
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éí×¯}N‹Z–‹­¦ëeŠw¬ÔŒ…äµÍ­¥±±Ì()†îd¤·†îeĞ³†ê¸¡¼¹Ñ¥É…Ù¥Ñä1$°ÁÀÛ€%¸Í¤Ÿ†îM´€ÔÍ­¥±°É§©¹œ†î„É•Á¼°€ÈĞÍ­¥±°“å¹œ¡Õ¹œÓ†î¬m…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±Ít¡¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±Ì¤°ÉÕ±”£†îE¹œ‹…¼¡¿¸Ñ£¹ §†êŒ°¡½½¬Õ…É‘É…¥°Û€†ê•Ô£±¹ …ÕÑ¼µÁ…ÍÌ¸((ŒŒ¤¡¼¹ŸÃ†îu¤­£Ñ¹œË¹ ¯†îäÑ¡×†êµĞ((ŒŒŒ]¥¹‘½İÌ((Ä¸S†ê¤mi%@·†îm¤¹£†ê•Ñt¡¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì½…É¡¥Ù”½É•™Ì½¡•…‘Ì½µ…¥¸¹é¥À¤Û€§†ê¤»¥¸¸(È¸7†î|Ñ£À·†î•ŒÛ†î­„§†ê¤»¥¸°¹£†ê•ÀƒGéÀ¥¹ÍÑ…±°¹‰…Ñ€¸(Ì¸£†îtÑ£Ñ¹œ‹…¼¡¿¸Ó†ê•Ğ°Í…ÔƒGÌ­£†î}¤ƒG†îe¹œ³†ê…¤¹Ñ¥É…Ù¥Ñä1$¸()-£Ñ¹œ†ê¸ÅÕç†î¸‘µ¥¹¥ÍÑÉ…Ñ½È¸†îd¤£†î$¡¤Û¼£†îLÏ„ÕÍ•È¡§†î¸Ó†ê…¤¸();†êıÔƒGŒ¤¥Ğ°ÌÑ£†îÓ†ê¤Û€£†ê…ä‹†êÅ¹œA½İ•ÉM¡•±°è()Á½İ•ÉÍ¡•±°)¥Ğ±½¹”¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì¹¥Ğ€ˆ‘!=5qq½İ¹±½…‘Íqq…äµÍ­¥±±Ìˆ(˜€ˆ‘!=5qq½İ¹±½…‘Íqq…äµÍ­¥±±Íqq¥¹ÍÑ…±°¹ÁÌÄˆ)€((ŒŒŒ1¥¹Õà°µ…=L¡¿†êİŒ]M0()‰…Í )¥Ğ±½¹”¡ÑÑÁÌè¼½¥Ñ¡Õˆ¹½´½åÕ!èÈÌ½…äµÍ­¥±±Ì¹¥Ğø½½İ¹±½…‘Ì½…äµÍ­¥±±Ì)‰…Í ø½½İ¹±½…‘Ì½…äµÍ­¥±±Ì½¥¹ÍÑ…±°¹Í )€()3†î¹ ¤ƒG†êİĞ†ê¸AåÑ¡½¸€ÌƒG†îŸ†îeÀ)M=8¸;†êıÔÑ¡§†êıÔAåÑ¡½¸€Ì°¥¹ÍÑ…±±•È“†î­¹œÑËÃ†îmŒ­¡¤¡¤™¥±”Û€£†î$ËÔƒE§†îÔ­§†î¸†ê¸¤¸((ŒŒ†îd¤†êµÀ¹£†êµĞ¹£†î½¹œŸ°()ğQ£¹ Á£†ê¸ğƒCÃ†îu¹œ“†ê­¸Ñ¿¸†î•Œğ)ğ´´µğ´´µğ)ğM­¥±±Ì¡¼¹Ñ¥É…Ù¥Ñä1$ğø¼¹•µ¥¹¤½…¹Ñ¥É…Ù¥Ñäµ±¤½Í­¥±±Ì½€ğ)ğM­¥±±Ì¡¼¹Ñ¥É…Ù¥ÑäÁÀÛ€%ğø¼¹•µ¥¹¤½½¹™¥œ½Í­¥±±Ì½€ğ)ğIÕ±”¡Õ¹œğø¼¹•µ¥¹¤½5%9$¹µ‘€¡¿†êİ¯}¶‰ËkºwµçAğ)ğ…ÕÑ¼µÁ…ÍÍ€ğ¤ƒG†êİĞ…ÕÑ¼µ…ÁÁÉ½Ù”Û€¡§†îÔÁ£†ê…´Ù¤ÅÕç†î¸†î„»Ì¸ğ)ğÑ•ÍĞµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€ğY§†êıĞÑ¡…äƒG†îU¤Ñ¡•¼¡Ô¯†îÌIµI8µIQ=H¸ğ)ğÑ½­•¸µ™ÉÕ…±¥Ñå€ğ§†î¼½¹Ñ•áĞŸ†î5¸°³ÁÔ¡•­Á½¥¹Ğ¡¼Ñ…Í¬“¤¸ğ)ğÙ•É¥™¥…Ñ¥½¸µ‰•™½É”µ½µÁ±•Ñ¥½¹€ğƒCÉ¤‹†êÅ¹œ£†î¥¹œ·†îm¤ÑËÃ†îmŒ­¡¤‹…¼¡¿¸Ó†ê•Ğ¸ğ((ŒŒM­¥±±Ì“å¹œ¡Õ¹œ((ÈĞÍ­¥±°ƒGÃ†îŒƒGÍ¹œŸÍ¤Ó†î¬…‘‘å½Íµ…¹¤½…•¹ĞµÍ­¥±±ÌØÀ¸Ø¸ÄÌè()…Á¤µ…¹µ¥¹Ñ•É™…”µ‘•Í¥¹€°‰É½İÍ•ÈµÑ•ÍÑ¥¹œµİ¥Ñ µ‘•ÙÑ½½±Í€°¤µµ…¹µ…ÕÑ½µ…Ñ¥½¹€°½‘”µÉ•Ù¥•Üµ…¹µÅÕ…±¥Ñå€°½‘”µÍ¥µÁ±¥™¥…Ñ¥½¹€°½¹ÍÑÉ…¥¹Ğµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°½¹Ñ•áĞµ•¹¥¹••É¥¹€°‘•‰Õ¥¹œµ…¹µ•ÉÉ½ÈµÉ•½Ù•Éå€°‘•ÁÉ•…Ñ¥½¸µ…¹µµ¥É…Ñ¥½¹€°‘½Õµ•¹Ñ…Ñ¥½¸µ…¹µ…‘ÉÍ€°‘½Õ‰Ğµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°™É½¹Ñ•¹µÕ¤µ•¹¥¹••É¥¹€°¥Ğµİ½É­™±½Üµ…¹µÙ•ÉÍ¥½¹¥¹€°¥‘•„µÉ•™¥¹•€°¥¹É•µ•¹Ñ…°µ¥µÁ±•µ•¹Ñ…Ñ¥½¹€°¥¹Ñ•ÉÙ¥•Üµµ•€°½‰Í•ÉÙ…‰¥±¥Ñäµ…¹µ¥¹ÍÑÉÕµ•¹Ñ…Ñ¥½¹€°Á•É™½Éµ…¹”µ½ÁÑ¥µ¥é…Ñ¥½¹€°Á±…¹¹¥¹œµ…¹µÑ…Í¬µ‰É•…­‘½İ¹€°Í•ÕÉ¥Ñäµ…¹µ¡…É‘•¹¥¹€°Í¡¥ÁÁ¥¹œµ…¹µ±…Õ¹¡€°Í½ÕÉ”µ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°ÍÁ•Œµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€°ÕÍ¥¹œµ…•¹ĞµÍ­¥±±Í€¸()M­¥±°Ñ•ÍĞµ‘É¥Ù•¸µ‘•Ù•±½Áµ•¹Ñ€Ó†î¬ÕÁÍÑÉ•…´ƒGÃ†îŒ‹†î<ÅÕ„Û°É•Á¼ƒGŒÌ‹†ê¸É§©¹œ¸§†ê•äÁ£¥ÀÛ€¡¤¹£†êµ¸¹×†îM¸»†êÅ´ÑÉ½¹œmQ!%I}AIQe}9=Q%L¹µ‘t¡Q!%I}AIQe}9=Q%L¹µ¤¸((ŒŒ¤‹†êÅ¹œÁÉ½µÁĞ();†êıÔ¹Ñ¥É…Ù¥ÑäƒGŒ£†ê…äÛ€ÌÅÕç†î¸£†ê…äÑ•Éµ¥¹…°°·†î|m¥¹ÍÑ…±°µÁÉ½µÁĞ¹µ‘t¡¥¹ÍÑ…±°µÁÉ½µÁĞ¹µ¤°Ÿ†îµ¤ÁÉ½µÁĞ¡¼…•¹ĞÛ€ƒG†î…•¹Ğ£†ê…ä¥¹ÍÑ…±±•ÈÑÉ½¹œÉ•Á¼ƒGŒÓ†ê¤á×†îE¹œ¸

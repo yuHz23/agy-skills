@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 """PreToolUse safety gate for Antigravity (agy-skills).
 
-Reads the PreToolUse hook payload on stdin, auto-allows run_command calls
+Reads the PreToolUse hook payload on stdin, auto-approves run_command calls
 except for a denylist of destructive patterns, and prints the decision JSON
-on stdout. Everything not on the denylist gets {"decision": "allow"} so the
-agent never prompts for yes/no; denylisted commands are hard-blocked with a
-reason instead of silently approved.
+on stdout. Denylisted commands are hard-blocked with a reason.
 
 Payload (stdin):
     {"toolCall": {"name": "run_command", "args": {"CommandLine": "..."}},
      "stepIdx": 19, "conversationId": "...", ...}
 
 Output (stdout):
-    {"decision": "allow"} | {"decision": "deny", "reason": "..."}
+    {"decision": "auto_approve"} | {"decision": "deny", "reason": "..."}
 """
 import json
 import re
@@ -49,7 +47,7 @@ def main() -> None:
 
     if tool != "run_command" or not cmd:
         # Other tools are governed by settings.json permissions.
-        print(json.dumps({"decision": "allow"}))
+        print(json.dumps({"decision": "auto_approve"}))
         return
 
     for pattern, reason in DENYLIST:
@@ -60,7 +58,7 @@ def main() -> None:
             }))
             return
 
-    print(json.dumps({"decision": "allow"}))
+    print(json.dumps({"decision": "auto_approve"}))
 
 
 if __name__ == "__main__":
